@@ -1,14 +1,21 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
+import useAppContext from "../../hooks/useAppContext";
 
 const routes = [
   ["Solutions", "/solutions"],
   ["Contact", "/contact"],
-  ["Login", "/login"],
+  ["Account (Protected)", "/account"],
 ];
 
 const Navbar = () => {
+  const { isLoggedIn, userLogout } = useAppContext();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    userLogout();
+    navigate("/", { replace: true });
+  };
   return (
     <nav className="uk-navbar-container" uk-navbar="true">
       <div className="uk-navbar-left uk-margin-left">
@@ -37,6 +44,20 @@ const Navbar = () => {
               </li>
             );
           })}
+          <li className="uk-flex uk-flex-middle">
+            {!isLoggedIn ? (
+              <NavLink to="/auth/login">
+                <button className="uk-button uk-button-primary">Login</button>
+              </NavLink>
+            ) : (
+              <button
+                className="uk-button uk-button-danger"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            )}
+          </li>
         </ul>
       </div>
     </nav>

@@ -1,8 +1,15 @@
 nav.uk-navbar.uk-navbar-container {
   background-color: #18324e;
+  max-height: 64px;
 }
 
 nav.uk-navbar.uk-navbar-container > div > ul > li > a {
   text-transform: none;
   color: #fafafa;
+}
+
+.uk-navbar-item,
+.uk-navbar-nav > li > a,
+.uk-navbar-toggle {
+  min-height: 64px !important;
 }
