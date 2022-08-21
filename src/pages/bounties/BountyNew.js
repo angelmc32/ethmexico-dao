@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
+import { ethers } from "ethers";
 import useAppContext from "../../hooks/useAppContext";
 import useForm from "../../hooks/useForm";
 import bronze_merit from "../../assets/images/bronze_merit.png";
@@ -9,16 +10,65 @@ import gold_merit from "../../assets/images/gold_merit.png";
 import { createBounty } from "../../services/nft-services";
 
 const BountyNew = () => {
-  const { address } = useAppContext();
+  const { address, wallet } = useAppContext();
   const [nftImageState, setNftImageState] = useState(null);
   const [showPreviewState, setShowPreviewState] = useState(null);
   const [meritPointsState, setMeritPointsState] = useState(null);
   const { handleInput, form, resetForm } = useForm();
 
-  const handleSubmit = async (event) => {
+  const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(form);
-    createBounty(address, form);
+    const signer = ethersProvider.getSigner();
+    console.log(ethersProvider);
+
+    let bountyNftFactoryAbi = [
+      "function deposit(uint _amount, address token) public payable",
+      "function withdraw(uint256 amount, address payable destAddr) public",
+      "function transferERC20(IERC20 token, address to, uint256 amount, uint256 bountyId) public",
+      "function createBounty(address _newBountyOwner, uint256 _newBountyId, string memory _title, uint256 _value, address _erc20tokenAddress, string memory _erc20tokenSymbol, string memory _imageURI) public",
+    ];
+
+    let bountyNft = new ethers.Contract(
+      "0x6bee2523a2e054846c45c1ec7da1258dbf04e159",
+      bountyNftFactoryAbi,
+      signer
+    );
+    // const gasEstimate = bountyNft.estimateGas.deposit(
+    //   10,
+    //   "0xd33602ce228adbc90625e4fc8071aae0cad11fe9"
+    // );
+
+    bountyNft
+      .deposit(10, "0xd33602ce228adbc90625e4fc8071aae0cad11fe9", {
+        value: 0,
+        gasLimit: 8000000,
+      })
+      .then((res) => {
+        console.log(res);
+        return res;
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+    // createBounty(
+    //   address,
+    //   form,
+    //   "0xd33602ce228adbc90625e4fc8071aae0cad11fe9",
+    //   "USDC",
+    //   wallet
+    // )
+    //   .then((res) => {
+    //     console.log(res);
+    //     if (!window.ethereum) return;
+    //     window.ethereum.request({
+    //       method: "eth_sendTransaction",
+    //       params: [res],
+    //     });
+    //   })
+    //   .catch((error) => console.log(error));
   };
 
   const togglePreview = () => {
@@ -48,7 +98,9 @@ const BountyNew = () => {
     handleInput(event);
   };
 
-  useEffect(() => {}, [form]);
+  useEffect(() => {
+    if (!window.ethereum) return;
+  }, [form]);
   return (
     <Fragment>
       <h2>Create New Bounty</h2>
