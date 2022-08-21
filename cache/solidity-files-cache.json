@@ -628,8 +628,8 @@
       ]
     },
     "/Users/mel/code/learning/meritDAO/contracts/BountyNFTFactory.sol": {
-      "lastModificationDate": 1661042777333,
-      "contentHash": "d27ee3c69f7e63abe5608980f9ddd9d8",
+      "lastModificationDate": 1661060783123,
+      "contentHash": "217189e2fbf16fce754dd8e40786bf4b",
       "sourceName": "contracts/BountyNFTFactory.sol",
       "solcConfig": {
         "version": "0.8.2",

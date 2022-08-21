@@ -2,6 +2,11 @@ export const DAOS = [
   {
     name: "ENS",
     members: 64000,
+    isMember: false,
+  },
+  {
+    name: "DreamerDAO",
+    members: 2000,
     isMember: true,
   },
   {

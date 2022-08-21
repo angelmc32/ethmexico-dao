@@ -1,74 +1,91 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ethers } from "ethers";
+import { useNavigate } from "react-router-dom";
+// import { ethers } from "ethers";
 import useAppContext from "../../hooks/useAppContext";
 import useForm from "../../hooks/useForm";
 import bronze_merit from "../../assets/images/bronze_merit.png";
 import silver_merit from "../../assets/images/silver_merit.png";
 import gold_merit from "../../assets/images/gold_merit.png";
 
-import { createBounty } from "../../services/nft-services";
+// import { createBounty } from "../../services/nft-services";
 
 const BountyNew = () => {
-  const { address, wallet } = useAppContext();
+  const { updateBounties } = useAppContext();
   const [nftImageState, setNftImageState] = useState(null);
   const [showPreviewState, setShowPreviewState] = useState(null);
   const [meritPointsState, setMeritPointsState] = useState(null);
-  const { handleInput, form, resetForm } = useForm();
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { handleInput, form } = useForm();
 
-  const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+  // const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
 
-  const handleSubmit = (event) => {
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const signer = ethersProvider.getSigner();
+  //   console.log(ethersProvider);
+
+  //   let bountyNftFactoryAbi = [
+  //     "function deposit(uint _amount, address token) public payable",
+  //     "function withdraw(uint256 amount, address payable destAddr) public",
+  //     "function transferERC20(IERC20 token, address to, uint256 amount, uint256 bountyId) public",
+  //     "function createBounty(address _newBountyOwner, uint256 _newBountyId, string memory _title, uint256 _value, address _erc20tokenAddress, string memory _erc20tokenSymbol, string memory _imageURI) public",
+  //   ];
+
+  //   let bountyNft = new ethers.Contract(
+  //     "0x6bee2523a2e054846c45c1ec7da1258dbf04e159",
+  //     bountyNftFactoryAbi,
+  //     signer
+  //   );
+  //   const gasEstimate = bountyNft.estimateGas.deposit(
+  //     10,
+  //     "0xd33602ce228adbc90625e4fc8071aae0cad11fe9"
+  //   );
+
+  //   bountyNft
+  //     .deposit(10, "0xd33602ce228adbc90625e4fc8071aae0cad11fe9", {
+  //       value: 0,
+  //       gasLimit: gasEstimate,
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //       return res;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       return error;
+  //     });
+  //   // createBounty(
+  //   //   address,
+  //   //   form,
+  //   //   "0xd33602ce228adbc90625e4fc8071aae0cad11fe9",
+  //   //   "USDC",
+  //   //   wallet
+  //   // )
+  //   //   .then((res) => {
+  //   //     console.log(res);
+  //   //     if (!window.ethereum) return;
+  //   //     window.ethereum.request({
+  //   //       method: "eth_sendTransaction",
+  //   //       params: [res],
+  //   //     });
+  //   //   })
+  //   //   .catch((error) => console.log(error));
+  // };
+
+  const createNewBounty = (event) => {
     event.preventDefault();
-    const signer = ethersProvider.getSigner();
-    console.log(ethersProvider);
+    setIsLoading(true);
+    form["id"] = "mdao005";
+    form["dao"] = "MeritDAO";
+    form["compensationMeritPoints"] = 5;
 
-    let bountyNftFactoryAbi = [
-      "function deposit(uint _amount, address token) public payable",
-      "function withdraw(uint256 amount, address payable destAddr) public",
-      "function transferERC20(IERC20 token, address to, uint256 amount, uint256 bountyId) public",
-      "function createBounty(address _newBountyOwner, uint256 _newBountyId, string memory _title, uint256 _value, address _erc20tokenAddress, string memory _erc20tokenSymbol, string memory _imageURI) public",
-    ];
-
-    let bountyNft = new ethers.Contract(
-      "0x6bee2523a2e054846c45c1ec7da1258dbf04e159",
-      bountyNftFactoryAbi,
-      signer
-    );
-    // const gasEstimate = bountyNft.estimateGas.deposit(
-    //   10,
-    //   "0xd33602ce228adbc90625e4fc8071aae0cad11fe9"
-    // );
-
-    bountyNft
-      .deposit(10, "0xd33602ce228adbc90625e4fc8071aae0cad11fe9", {
-        value: 0,
-        gasLimit: 8000000,
-      })
-      .then((res) => {
-        console.log(res);
-        return res;
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
-    // createBounty(
-    //   address,
-    //   form,
-    //   "0xd33602ce228adbc90625e4fc8071aae0cad11fe9",
-    //   "USDC",
-    //   wallet
-    // )
-    //   .then((res) => {
-    //     console.log(res);
-    //     if (!window.ethereum) return;
-    //     window.ethereum.request({
-    //       method: "eth_sendTransaction",
-    //       params: [res],
-    //     });
-    //   })
-    //   .catch((error) => console.log(error));
+    updateBounties(form);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate("/bounties");
+    }, 1500);
   };
 
   const togglePreview = () => {
@@ -98,15 +115,14 @@ const BountyNew = () => {
     handleInput(event);
   };
 
-  useEffect(() => {
-    if (!window.ethereum) return;
-  }, [form]);
+  useEffect(() => {}, [form]);
+
   return (
     <Fragment>
       <h2>Create New Bounty</h2>
       <div className="uk-width-1-1 uk-flex uk-flex-around">
         <div className="uk-width-2-5 uk-flex uk-flex-column uk-flex-middle">
-          <StyledForm className="uk-form" onSubmit={handleSubmit}>
+          <StyledForm className="uk-form" onSubmit={createNewBounty}>
             <div className="uk-form-controls">
               <label htmlFor="title">Title:</label>
               <input
@@ -118,10 +134,10 @@ const BountyNew = () => {
               />
             </div>
             <div className="uk-form-controls">
-              <label htmlFor="date">Date:</label>
+              <label htmlFor="dueDate">Date:</label>
               <input
-                name="date"
-                id="date"
+                name="dueDate"
+                id="dueDate"
                 type="date"
                 className="uk-input"
                 onChange={handleInput}
@@ -176,8 +192,12 @@ const BountyNew = () => {
               </div>
             </div>
             {showPreviewState && (
-              <button className="uk-button uk-button-primary">
-                Create Bounty
+              <button
+                className="uk-button uk-button-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? "Creating" : "Create Bounty"}
+                {isLoading && <div uk-spinner="true"></div>}
               </button>
             )}
           </StyledForm>

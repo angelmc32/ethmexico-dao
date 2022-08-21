@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 
 const DAOCard = ({ name, members, isMember }) => {
   return (
@@ -8,12 +9,14 @@ const DAOCard = ({ name, members, isMember }) => {
       <div className="uk-card-body">
         <p className="uk-margin-remove">Members:</p>
         <h4 className="uk-margin">{members}</h4>
-        {isMember ? (
+        {!isMember ? (
           <button className="uk-button uk-button-muted uk-margin">Join</button>
         ) : (
-          <button className="uk-button uk-button-primary uk-margin">
-            Vote
-          </button>
+          <NavLink to={`/dao/${name}/proposals`}>
+            <button className="uk-button uk-button-primary uk-margin-top">
+              Vote
+            </button>
+          </NavLink>
         )}
       </div>
     </StyledCard>

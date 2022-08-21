@@ -8,8 +8,8 @@ const silver_badge_URI =
 const bronze_badge_URI =
   "https://ipfs.io/ipfs/QmUHbny2snjs7Gco6Hkwyu44Yzrf1ZMh6e4SQssZyq9FT8";
 
-const rpc = "https://rpc-mumbai.maticvigil.com/";
-const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+// const rpc = "https://rpc-mumbai.maticvigil.com/";
+// const ethersProvider = new ethers.providers.JsonRpcProvider(rpc);
 
 let membershipNftAbi = [
   "function balanceOf(address owner) public view returns(uint256 balance)",
@@ -20,8 +20,8 @@ let membershipNftAbi = [
 
 let membershipNft = new ethers.Contract(
   "0x8202398ED2885187b39220Aeb26e795486930681",
-  membershipNftAbi,
-  ethersProvider
+  membershipNftAbi
+  // ethersProvider
 );
 
 let bountyNftFactoryAbi = [
@@ -108,8 +108,8 @@ export const createBounty = async (
 
   let bountyNft = new ethers.Contract(
     "0x6bee2523a2e054846c45c1ec7da1258dbf04e159",
-    bountyNftFactoryAbi,
-    ethersProvider
+    bountyNftFactoryAbi
+    // ethersProvider
   );
   console.log(bountyNft);
 

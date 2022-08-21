@@ -48,9 +48,6 @@ contract BountyNFTFactory is ERC721URIStorage {
 
     function deposit(uint _amount, IERC20 token) public payable {
         // Set the minimum amount to 1 token (in this case I'm using LINK token)
-        uint _minAmount = 1*(10**18);
-        // Here we validate if sended USDT for example is higher than 50, and if so we increment the counter
-        require(_amount >= _minAmount, "Amount less than minimum amount");
         // I call the function of IERC20 contract to transfer the token from the user (that he's interacting with the contract) to
         // the smart contract  
         IERC20(token).transferFrom(msg.sender, address(this), _amount);
@@ -76,10 +73,10 @@ contract BountyNFTFactory is ERC721URIStorage {
 
 // delete _newBountyId from params, since we're using newItemId to generate tokenId
 // include date field for bounty struct
-    function createBounty(address _newBountyOwner, uint256 _newBountyId, string memory _title, uint256 _value, address _erc20tokenAddress, string memory _erc20tokenSymbol, string memory _imageURI) public {
+    function createBounty(address _newBountyOwner, string memory _title, uint256 _value, address _erc20tokenAddress, string memory _erc20tokenSymbol, string memory _imageURI) public {
         uint256 newItemId = _tokenIds.current();
         Bounty memory newBounty = Bounty(msg.sender, newItemId, _title, _value, _erc20tokenAddress, _erc20tokenSymbol, _imageURI);
-        _safeMint(_newBountyOwner, _newBountyId);
+        _safeMint(_newBountyOwner, newItemId);
         allMintedBounties.push(newBounty);
         emit MintNewBounty(msg.sender, newItemId, _value);
         _tokenIds.increment();

@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import styled from "styled-components";
 import DAOCard from "../../components/DAOCard";
 
 import { DAOS } from "../../data/DAOs";
@@ -7,20 +8,21 @@ const DaosIndex = () => {
   return (
     <Fragment>
       <h2>Find your DAO!</h2>
-      <div
-        className="uk-width-4-5 uk-child-width-1-4 uk-text-center uk-flex-wrap"
-        uk-grid="true"
-      >
+      <div className="uk-width-1-1 uk-text-center uk-flex uk-flex-center uk-flex-wrap">
         {DAOS.map((dao, index) => {
           return (
-            <div key={index}>
+            <StyledDiv key={index} className="uk-width-1-4">
               <DAOCard {...dao} />
-            </div>
+            </StyledDiv>
           );
         })}
       </div>
     </Fragment>
   );
 };
+
+const StyledDiv = styled.div`
+  margin: 10px !important;
+`;
 
 export default DaosIndex;

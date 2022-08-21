@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useCallback, useState } from "react";
 import { ethers } from "ethers";
+import { BOUNTIES } from "../data/Bounties";
 
 export const AppContext = createContext({
   address: null,
@@ -10,10 +11,13 @@ export const AppContext = createContext({
   connectWallet: () => {},
   disconnectWallet: () => {},
   updateMembership: () => {},
-  bounties: [],
+  bounties: BOUNTIES,
+  updateBounties: () => {},
+  updateLensAuthToken: () => {},
 });
 
 const AppProvider = ({ children }) => {
+  const [lensAuthToken, setLensAuthToken] = useState(null);
   const [balance, setBalance] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
   const [walletAddress, setWalletAddress] = useState(null);
@@ -21,78 +25,78 @@ const AppProvider = ({ children }) => {
   const [membershipIdState, setMembershipIdState] = useState(null);
   const [chainId, setChainId] = useState(0);
   const [chainname, setChainName] = useState("");
-  const [bountiesState, setBountiesState] = useState([]);
+  const [bountiesState, setBountiesState] = useState(BOUNTIES);
 
-  async function requestAccount() {
-    console.log("Requesting account...");
+  // async function requestAccount() {
+  //   console.log("Requesting account...");
 
-    // ❌ Check if Meta Mask Extension exists
-    if (window.ethereum) {
-      console.log("detected");
+  //   // ❌ Check if Meta Mask Extension exists
+  //   if (window.ethereum) {
+  //     console.log("detected");
 
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        return accounts;
-      } catch (error) {
-        console.log("Error connecting...");
-      }
-    } else {
-      alert("Meta Mask not detected");
-    }
-  }
+  //     try {
+  //       const accounts = await window.ethereum.request({
+  //         method: "eth_requestAccounts",
+  //       });
+  //       return accounts;
+  //     } catch (error) {
+  //       console.log("Error connecting...");
+  //     }
+  //   } else {
+  //     alert("Meta Mask not detected");
+  //   }
+  // }
 
-  // Create a provider to interact with a smart contract
-  const connectWallet = useCallback(async () => {
-    if (typeof window.ethereum !== "undefined") {
-      const accounts = await requestAccount();
-      return accounts[0];
-    }
-  }, []);
+  // // Create a provider to interact with a smart contract
+  // const connectWallet = useCallback(async () => {
+  //   if (typeof window.ethereum !== "undefined") {
+  //     const accounts = await requestAccount();
+  //     return accounts[0];
+  //   }
+  // }, []);
 
-  async function connectToMetamask() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // Prompt user for account connections
-    const accounts = await provider.send("eth_requestAccounts", []);
-    console.log(accounts);
-    const signer = provider.getSigner();
-    return signer;
-    console.log("Account:", await signer.getAddress());
-  }
+  // async function connectToMetamask() {
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   // Prompt user for account connections
+  //   const accounts = await provider.send("eth_requestAccounts", []);
+  //   console.log(accounts);
+  //   const signer = provider.getSigner();
+  //   console.log("Account:", await signer.getAddress());
+  //   return signer;
+  // }
 
-  useEffect(() => {
-    if (!currentAddress || !ethers.utils.isAddress(currentAddress)) return;
-    //client side code
-    if (!window.ethereum) return;
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+  // useEffect(() => {
+  //   if (!currentAddress || !ethers.utils.isAddress(currentAddress)) return;
+  //   //client side code
+  //   if (!window.ethereum) return;
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    connectToMetamask().then((res) => {
-      setSignerState(res);
-      console.log(res);
-    });
-    // console.log("loading");
-    // connectWallet().then((res) => {
-    //   console.log("Saving wallet add");
-    //   setWalletAddress(res);
-    // });
-    // console.log("loaded");
+  //   connectToMetamask().then((res) => {
+  //     setSignerState(res);
+  //     console.log(res);
+  //   });
+  // console.log("loading");
+  // connectWallet().then((res) => {
+  //   console.log("Saving wallet add");
+  //   setWalletAddress(res);
+  // });
+  // console.log("loaded");
 
-    provider.getBalance(currentAddress).then((result) => {
-      setBalance(ethers.utils.formatEther(result));
-    });
-    provider.getNetwork().then((result) => {
-      setChainId(result.chainId);
-      setChainName(result.name);
-    });
+  // provider.getBalance(currentAddress).then((result) => {
+  //   setBalance(ethers.utils.formatEther(result));
+  // });
+  // provider.getNetwork().then((result) => {
+  //   setChainId(result.chainId);
+  //   setChainName(result.name);
+  // });
 
-    // provider.send("eth_requestAccounts", []).then((res) => {
-    //   const signer = provider.getSigner();
-    //   //signer.getAddress().then((res) => console.log(res));
-    //   console.log(signer);
-    //   setSignerState(signer);
-    // });
-  }, [currentAddress, connectWallet]);
+  // provider.send("eth_requestAccounts", []).then((res) => {
+  //   const signer = provider.getSigner();
+  //   //signer.getAddress().then((res) => console.log(res));
+  //   console.log(signer);
+  //   setSignerState(signer);
+  // });
+  // }, [currentAddress, connectWallet]);
 
   const onClickConnect = () => {
     //client side code
@@ -123,6 +127,16 @@ const AppProvider = ({ children }) => {
     setMembershipIdState(membershipId);
   };
 
+  const updateLensAuthToken = (lensAuthToken) => {
+    setLensAuthToken(lensAuthToken);
+  };
+
+  const updateBounties = (bountyData) => {
+    const bountiesCopy = [...bountiesState];
+    bountiesCopy.push(bountyData);
+    setBountiesState(bountiesCopy);
+  };
+
   const appContextValue = {
     address: currentAddress,
     balance: balance,
@@ -133,6 +147,8 @@ const AppProvider = ({ children }) => {
     bounties: bountiesState,
     membershipId: membershipIdState,
     updateMembership,
+    updateBounties,
+    updateLensAuthToken,
   };
 
   return (

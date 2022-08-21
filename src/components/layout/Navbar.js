@@ -4,7 +4,7 @@ import logo from "../../assets/images/logo.svg";
 import useAppContext from "../../hooks/useAppContext";
 
 const routes = [
-  ["Explore", "/daos"],
+  ["Explore", "/dao"],
   ["Bounties", "/bounties"],
   ["Account (Protected)", "/account"],
 ];

@@ -19,7 +19,7 @@ const Router = () => {
 
         <Route element={<RequireAuth />}>
           <Route path="/bounties/*" element={<BountiesRouter />} />
-          <Route path="/daos/*" element={<DaosRouter />} />
+          <Route path="/dao/*" element={<DaosRouter />} />
 
           <Route path="/home" element={<Home />} />
           <Route path="/account" element={<Account />} />

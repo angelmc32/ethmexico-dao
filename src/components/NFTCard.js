@@ -8,9 +8,9 @@ const NFTCard = ({
 }) => {
   return (
     <StyledCard className="uk-card uk-card-default">
-      <div className="uk-card-media-top">
+      <div className="uk-card-media-top uk-flex uk-flex-center uk-margin">
         {image ? (
-          <div className="uk-width-1-2">
+          <div className="uk-width-1-2 uk-margin-top">
             <img src={image} alt="" />{" "}
           </div>
         ) : (
@@ -18,7 +18,7 @@ const NFTCard = ({
         )}
       </div>
       <div className="uk-card-body">
-        <h3 className="uk-card-title">{name}</h3>
+        <h3 className="uk-card-title uk-text-center">{name}</h3>
       </div>
     </StyledCard>
   );

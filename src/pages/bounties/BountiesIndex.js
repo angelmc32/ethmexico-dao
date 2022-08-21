@@ -1,9 +1,18 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import useAppContext from "../../hooks/useAppContext";
 import styled from "styled-components";
 import { BOUNTIES } from "../../data/Bounties";
 
 const BountiesIndex = () => {
+  const { bounties } = useAppContext();
+  const [bountiesState, setBountiesState] = useState([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setBountiesState(bounties);
+    });
+  }, [bounties]);
   return (
     <Fragment>
       <h2>Bounties</h2>
@@ -33,7 +42,7 @@ const BountiesIndex = () => {
                   {bounty.compensationMeritPoints}
                 </td>
                 <td className="uk-text-center">
-                  <NavLink to="/bounties/submit">
+                  <NavLink to={`/bounties/submit/${bounty.id}`}>
                     <button className="uk-button uk-button-primary uk-button-small">
                       Submit
                     </button>
@@ -42,6 +51,27 @@ const BountiesIndex = () => {
               </tr>
             );
           })}
+          {bounties.length > 0 &&
+            bounties.map((bounty) => {
+              return (
+                <tr className="mc-row-card" key={bounty.id}>
+                  <td className="uk-text-center">{bounty.title}</td>
+                  <td className="uk-text-center">{bounty.dao}</td>
+                  <td className="uk-text-center">{bounty.dueDate}</td>
+                  <td className="uk-text-center">{bounty.compensationUSD}</td>
+                  <td className="uk-text-center">
+                    {bounty.compensationMeritPoints}
+                  </td>
+                  <td className="uk-text-center">
+                    <NavLink to={`/bounties/submit/${bounty.id}`}>
+                      <button className="uk-button uk-button-primary uk-button-small">
+                        Submit
+                      </button>
+                    </NavLink>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </StyledTable>
     </Fragment>
