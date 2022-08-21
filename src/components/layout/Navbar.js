@@ -4,16 +4,16 @@ import logo from "../../assets/images/logo.svg";
 import useAppContext from "../../hooks/useAppContext";
 
 const routes = [
-  ["Solutions", "/solutions"],
-  ["Contact", "/contact"],
+  ["Explore", "/daos"],
+  ["Bounties", "/bounties"],
   ["Account (Protected)", "/account"],
 ];
 
 const Navbar = () => {
-  const { isLoggedIn, userLogout } = useAppContext();
+  const { address, connectWallet, disconnectWallet } = useAppContext();
   const navigate = useNavigate();
   const handleLogout = () => {
-    userLogout();
+    disconnectWallet();
     navigate("/", { replace: true });
   };
   return (
@@ -45,10 +45,13 @@ const Navbar = () => {
             );
           })}
           <li className="uk-flex uk-flex-middle">
-            {!isLoggedIn ? (
-              <NavLink to="/auth/login">
-                <button className="uk-button uk-button-primary">Login</button>
-              </NavLink>
+            {!address ? (
+              <button
+                className="uk-button uk-button-primary"
+                onClick={connectWallet}
+              >
+                Connect Wallet
+              </button>
             ) : (
               <button
                 className="uk-button uk-button-danger"

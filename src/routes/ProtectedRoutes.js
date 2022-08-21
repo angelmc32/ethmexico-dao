@@ -4,9 +4,9 @@ import { AppContext } from "../context/AppContext";
 import Login from "../pages/auth/Login";
 
 const ProtectedRoutes = () => {
-  const { isLoggedIn } = useContext(AppContext);
+  const { address } = useContext(AppContext);
 
-  return isLoggedIn ? <Outlet /> : <Login />;
+  return address ? <Outlet /> : <Login />;
 };
 
 export default ProtectedRoutes;

@@ -3,16 +3,15 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAppContext from "../../hooks/useAppContext";
 
 const RequireAuth = () => {
-  const { isLoggedIn, token } = useAppContext();
+  const { address } = useAppContext();
   const location = useLocation();
-  console.log("Is user logged in?:", isLoggedIn);
-  console.log("There is no token:", token == undefined);
+  console.log("Is user logged in?:", address);
 
   // Check with token or with isLoggedIn?
-  return token ? (
+  return address ? (
     <Outlet />
   ) : (
-    <Navigate to="/auth/login" state={{ from: location }} replace />
+    <Navigate to="/" state={{ from: location }} replace />
   );
 };
 
